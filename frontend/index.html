@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>PR Review Agent</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background: #f5f7fa;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 30px;
+      }
+      h1 {
+        color: #333;
+      }
+      .card {
+        background: white;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        width: 500px;
+        text-align: center;
+      }
+      input[type="file"] {
+        margin: 15px 0;
+      }
+      button {
+        background: #007bff;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+      }
+      button:hover {
+        background: #0056b3;
+      }
+      pre {
+        text-align: left;
+        background: #f0f0f0;
+        padding: 15px;
+        border-radius: 8px;
+        overflow-x: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>PR Review Agent</h1>
+    <div class="card">
+      <form id="uploadForm">
+        <input type="file" id="fileInput" name="file" required />
+        <br />
+        <button type="submit">Analyze PR</button>
+      </form>
+      <h3>Results:</h3>
+      <pre id="result"></pre>
+    </div>
+
+    <script>
+      document
+        .getElementById("uploadForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const fileInput = document.getElementById("fileInput");
+          if (!fileInput.files.length) {
+            alert("Please select a file.");
+            return;
+          }
+          const formData = new FormData();
+          formData.append("file", fileInput.files[0]);
+
+          const response = await fetch("http://127.0.0.1:8000/analyze", {
+            method: "POST",
+            body: formData,
+          });
+          const data = await response.json();
+          document.getElementById("result").textContent = JSON.stringify(
+            data,
+            null,
+            2
+          );
+        });
+    </script>
+  </body>
+</html>
